@@ -27,9 +27,18 @@ Inquander.prototype.askForCommand = function() {
         choices: me.commandMapper.mapCommands()
     }], function(answer) {
         me.command = me.commandMapper.getCommand(answer.commandName);
+        me.args = me.commandMapper.mapArguments(answer.commandName);
+        me.options = me.commandMapper.mapOptions(answer.commandName);
         me.argv[2] = answer.commandName;
-        me.program.parse(me.argv);
+        if (me.args.length > 0 || me.options.length > 0) {
+            this.askForArgs();
+        } else {
+            me.program.parse(me.argv);
+        }
     });
+};
+
+Inquander.prototype.askForArgs = function() {
 };
 
 module.exports = new Inquander();
