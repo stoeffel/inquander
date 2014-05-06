@@ -1,0 +1,27 @@
+{
+  "name": "inquander",
+  "version": "0.0.1",
+  "description": "Inquirer for commander. If no arguments and options are passed to your commander app, it runs inquirer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoeffel/inquander.git"
+  },
+  "keywords": [
+    "inquirer",
+    "commander",
+    "cli"
+  ],
+  "author": "Christoph Hermann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stoeffel/inquander/issues"
+  },
+  "homepage": "https://github.com/stoeffel/inquander",
+  "devDependencies": {
+    "mocha": "~1.18.2"
+  }
+}
