@@ -36,4 +36,6 @@ program
     .action(function() {
         console.log('Please come again.');
     });
-inquander.parse(program, process.argv);
+inquander.parse(program, process.argv, {
+    message: 'Pizza pizza'
+});

@@ -7,8 +7,10 @@ var inquirer = require('inquirer'),
 Inquander = function() {};
 
 Inquander.prototype.parse = function(program, argv, config) {
+    config = config || {};
     this.program = program;
     this.argv = argv;
+    this.message = config.message;
     this.commandMapper = new CommandMapper(program, config);
     if (this.commandMapper.hasNoArguments(this.argv)) {
         this.askForCommand();
@@ -21,7 +23,7 @@ Inquander.prototype.askForCommand = function() {
     var me = this;
     inquirer.prompt([{
         type: 'list',
-        message: 'What would you like me to do?',
+        message: me.message || 'What would you like me to do?',
         name: 'commandName',
         default: 'create',
         choices: me.commandMapper.mapCommands()
