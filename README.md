@@ -1,4 +1,9 @@
 inquander
 =========
 
-Inquirer for commander. If no arguments and options are passed to your commander app, it runs inquirer.
+Inquirer for commander.
+This module takes two awesome modules and connects them.
+
+If no arguments and options are passed to your [commander](https://github.com/visionmedia/commander.js) app, it runs [inquirer](https://github.com/SBoudrias/Inquirer.js). For all commands, arguments and options defined in your commander app.
+
+See example for an example.
