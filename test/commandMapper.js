@@ -2,7 +2,7 @@ var should = require('should'),
     CommandMapper = require('../lib/commandMapper');
 
 describe('commandMapper', function() {
-    var commandMapper, commandMapperNoCommands;
+    var commandMapper, commandMapperNoCommands, commandMapperFiltered;
     beforeEach(function() {
         var program = {
             commands: [{
@@ -29,6 +29,11 @@ describe('commandMapper', function() {
             };
         commandMapperNoCommands = new CommandMapper(programNoCommands);
         commandMapper = new CommandMapper(program);
+        commandMapperFiltered = new CommandMapper(program, {
+            commandFilter: function(command) {
+                return command === 'bar';
+            }
+        });
     });
 
     describe('#hasNoArguments', function() {
@@ -48,6 +53,10 @@ describe('commandMapper', function() {
 
         it('should return an empty array if no commands are given', function() {
             commandMapperNoCommands.mapCommands().should.be.eql([]);
+        });
+
+        it('should filter commands if a commandFilter function is given', function() {
+            commandMapperFiltered.mapCommands().should.be.eql(['bar']);
         });
     });
 
