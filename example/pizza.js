@@ -11,7 +11,7 @@ program
     .option('-p, --peppers', 'Add peppers')
     .option('-P, --pineapple', 'Add pineapple')
     .option('-b, --bbq', 'Add bbq sauce')
-    .option('-c, --cheese <type>', 'Add the specified type of cheese [marble]')
+    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
     .option('-C, --no-cheese', 'You do not want any cheese')
     .action(function(count, options) {
         console.log('You ordered', count, ' pizzas, with:');

@@ -70,9 +70,11 @@ describe('commandMapper', function() {
     describe('#mapOptions', function() {
         it('should return an array of all options, if any are given.', function() {
             commandMapper.mapOptions('foo').should.be.eql([{
+                bool: false,
                 name: '--option',
                 description: 'desc',
-                required: true
+                required: true,
+                default: undefined
             }]);
         });
     });
