@@ -7,7 +7,7 @@ var program = require('commander'),
 program
     .version('0.0.1')
     .command('order [count]')
-    .description('How many pizzas would you like to order?')
+    .description('Order a pizza.')
     .option('-p, --peppers', 'Add peppers')
     .option('-P, --pineapple', 'Add pineapple')
     .option('-b, --bbq', 'Add bbq sauce')
@@ -38,5 +38,6 @@ program
     });
 
 inquander.parse(program, process.argv, {
-    message: 'Pizza pizza'
+    message: 'Pizza pizza',
+    defaultCommand: 'pay'
 });

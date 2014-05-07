@@ -7,6 +7,7 @@ describe('commandMapper', function() {
         var program = {
             commands: [{
                 _name: 'foo',
+                _description: 'desc',
                 _args: [{
                     name: 'title',
                     required: true
@@ -21,6 +22,7 @@ describe('commandMapper', function() {
                 }]
             }, {
                 _name: 'bar',
+                _description: 'desc',
                 _args: []
             }]
         },
@@ -48,7 +50,13 @@ describe('commandMapper', function() {
 
     describe('#mapCommands', function() {
         it('shoud return a array with the command names', function() {
-            commandMapper.mapCommands().should.be.eql(['foo', 'bar']);
+            commandMapper.mapCommands().should.be.eql([{
+                name: 'foo',
+                description: 'desc'
+            }, {
+                name: 'bar',
+                description: 'desc'
+            }]);
         });
 
         it('should return an empty array if no commands are given', function() {
@@ -56,7 +64,10 @@ describe('commandMapper', function() {
         });
 
         it('should filter commands if a commandFilter function is given', function() {
-            commandMapperFiltered.mapCommands().should.be.eql(['bar']);
+            commandMapperFiltered.mapCommands().should.be.eql([{
+                name: 'bar',
+                description: 'desc'
+            }]);
         });
     });
 

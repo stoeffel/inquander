@@ -11,6 +11,7 @@ Inquander.prototype.parse = function(program, argv, config) {
     this.program = program;
     this.argv = argv;
     this.message = config.message;
+    this.defaultCommand = config.defaultCommand;
     this.commandMapper = new CommandMapper(program, config);
     if (this.commandMapper.hasNoArguments(this.argv)) {
         this.askForCommand();
@@ -25,8 +26,13 @@ Inquander.prototype.askForCommand = function() {
         type: 'list',
         message: me.message || 'What would you like me to do?',
         name: 'commandName',
-        default: 'create',
-        choices: me.commandMapper.mapCommands()
+        default: this.defaultCommand,
+        choices: _.map(me.commandMapper.mapCommands(), function(command) {
+            return {
+                name: command.description || command.name,
+                value: command.name
+            };
+        })
     }], function(answer) {
         me.command = me.commandMapper.getCommand(answer.commandName);
         me.args = me.commandMapper.mapArguments(answer.commandName);
@@ -90,7 +96,8 @@ Inquander.prototype.mapOptions = function() {
             type: (option.bool) ? 'confirm' : 'input',
             message: _s.capitalize(option.description.replace('--', '')) + '? (' + option.name + ')',
             name: option.name,
-            default: option.default,
+            default: option.
+            default,
             validate: function(value) {
                 if (option.required) {
                     return value !== null && value !== '';
