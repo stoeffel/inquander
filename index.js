@@ -6,10 +6,10 @@ var inquirer = require('inquirer'),
 
 Inquander = function() {};
 
-Inquander.prototype.parse = function(program, argv) {
+Inquander.prototype.parse = function(program, argv, config) {
     this.program = program;
     this.argv = argv;
-    this.commandMapper = new CommandMapper(program);
+    this.commandMapper = new CommandMapper(program, config);
     if (this.commandMapper.hasNoArguments(this.argv)) {
         this.askForCommand();
     } else {
