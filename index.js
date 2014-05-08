@@ -13,7 +13,7 @@ Inquander.prototype.parse = function(program, argv, config) {
     this.argv = argv;
     this.message = config.message;
     this.defaultCommand = config.defaultCommand;
-    this.overrides = config.overrides;
+    this.overrides = config.overrides || {};
     this.commandMapper = new CommandMapper(program, config);
 
     if (this.commandMapper.hasNoArguments(this.argv)) {
