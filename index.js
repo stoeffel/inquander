@@ -2,6 +2,7 @@ var inquirer = require('inquirer'),
     _ = require('lodash'),
     _s = require('underscore.string'),
     CommandMapper = require('./lib/commandMapper'),
+    InquireMapper = require('./lib/inquireMapper'),
     Inquander;
 
 Inquander = function() {};
@@ -13,7 +14,9 @@ Inquander.prototype.parse = function(program, argv, config) {
     this.message = config.message;
     this.defaultCommand = config.defaultCommand;
     this.commandMapper = new CommandMapper(program, config);
+
     if (this.commandMapper.hasNoArguments(this.argv)) {
+        this.inquireMapper = new InquireMapper(this.commandMapper, config);
         this.askForCommand();
     } else {
         program.parse(argv);
@@ -27,12 +30,7 @@ Inquander.prototype.askForCommand = function() {
         message: me.message || 'What would you like me to do?',
         name: 'commandName',
         default: this.defaultCommand,
-        choices: _.map(me.commandMapper.mapCommands(), function(command) {
-            return {
-                name: command.description || command.name,
-                value: command.name
-            };
-        })
+        choices: this.inquireMapper.mapCommands()
     }], function(answer) {
         me.command = me.commandMapper.getCommand(answer.commandName);
         me.args = me.commandMapper.mapArguments(answer.commandName);
@@ -51,7 +49,7 @@ Inquander.prototype.hasArgs = function() {
 };
 
 Inquander.prototype.askForArgs = function() {
-    var questions = _.union(this.mapArgs(), this.mapOptions()),
+    var questions = _.union(this.inquireMapper.mapArguments(this.args), this.inquireMapper.mapOptions(this.options)),
         me = this;
     questions = _.compact(questions);
     inquirer.prompt(questions, function(answers) {
@@ -73,40 +71,5 @@ Inquander.prototype.askForArgs = function() {
     });
 };
 
-Inquander.prototype.mapArgs = function() {
-    return _.map(this.args, function(arg) {
-        return {
-            type: 'input',
-            message: _s.capitalize(arg.name),
-            name: arg.name,
-            validate: function(value) {
-                if (arg.required) {
-                    return value !== null && value !== '';
-                } else {
-                    return true;
-                }
-            }
-        };
-    });
-};
-
-Inquander.prototype.mapOptions = function() {
-    return _.map(this.options, function(option) {
-        return {
-            type: (option.bool) ? 'confirm' : 'input',
-            message: _s.capitalize(option.description.replace('--', '')) + '? (' + option.name + ')',
-            name: option.name,
-            default: option.
-            default,
-            validate: function(value) {
-                if (option.required) {
-                    return value !== null && value !== '';
-                } else {
-                    return true;
-                }
-            }
-        };
-    });
-};
 
 module.exports = new Inquander();
