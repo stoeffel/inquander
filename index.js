@@ -65,6 +65,9 @@ Inquander.prototype.askForArgs = function() {
                     return [key, value];
                 }
             } else {
+                if (_.isArray(value)) {
+                    value = value.join(',');
+                }
                 return value;
             }
         }).flatten().compact().value();

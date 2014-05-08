@@ -6,15 +6,16 @@ var program = require('commander'),
 
 program
     .version('0.0.1')
-    .command('order [count]')
+    .command('order [count] [pickup]')
     .description('Order a pizza.')
     .option('-p, --peppers', 'Add peppers')
     .option('-P, --pineapple', 'Add pineapple')
     .option('-b, --bbq', 'Add bbq sauce')
     .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
     .option('-C, --no-cheese', 'You do not want any cheese')
-    .action(function(count, options) {
+    .action(function(count, pickup, options) {
         console.log('You ordered', count, ' pizzas, with:');
+        console.log(pickup);
         if (options.peppers) {
             console.log('Peppers');
         }
@@ -44,6 +45,10 @@ inquander.parse(program, process.argv, {
     overrides: {
         'creditcard': {
             type: 'password'
+        },
+        'pickup': {
+            type: 'checkbox',
+            choices: ['one', 'two']
         }
     }
 });
