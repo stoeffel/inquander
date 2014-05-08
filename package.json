@@ -1,6 +1,6 @@
 {
   "name": "inquander",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Inquirer for commander. If no arguments and options are passed to your commander app, it runs inquirer.",
   "main": "index.js",
   "scripts": {

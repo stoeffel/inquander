@@ -32,12 +32,18 @@ program
         }
     });
 program
-    .command('pay')
-    .action(function() {
+    .command('pay [creditcard]')
+    .action(function(creditcard) {
         console.log('Please come again.');
+        console.log(creditcard);
     });
 
 inquander.parse(program, process.argv, {
     message: 'Pizza pizza',
-    defaultCommand: 'pay'
+    defaultCommand: 'pay',
+    overrides: {
+        'creditcard': {
+            type: 'password'
+        }
+    }
 });
