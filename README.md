@@ -31,5 +31,8 @@ program
 inquander.parse(program, process.argv);
 ```
 
+If you call your module with arguments it acts like a normal commander tool.
 ![call with arguments](https://raw.githubusercontent.com/stoeffel/inquander/master/example/call_as_commander.png)
+
+But if you call it without any arguments or commands it will parse your definitions and runs it using inquirer.
 ![call without arguments](https://raw.githubusercontent.com/stoeffel/inquander/master/example/call_as_inquirer.png)
