@@ -31,5 +31,5 @@ program
 inquander.parse(program, process.argv);
 ```
 
-![call with arguments]()
-![call without arguments]()
+![call with arguments](https://raw.githubusercontent.com/stoeffel/inquander/master/example/call_as_commander.png)
+![call without arguments](https://raw.githubusercontent.com/stoeffel/inquander/master/example/call_as_inquirer.png)
