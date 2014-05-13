@@ -11,4 +11,25 @@ Usage
 -----
 
 Instead of calling programm.parse you need to call inquander.parse.
-See example for an example.
+
+```Javascript
+var program = require('commander'),
+    inquander = require('inquander');
+
+program
+    .command('hello [name]')
+    .action(function(name) {
+        console.log('Hello', name);
+    });
+program
+    .command('pay [creditcard]')
+    .action(function(creditcard) {
+        console.log('Please come again.');
+        console.log(creditcard);
+    });
+
+inquander.parse(program, process.argv);
+```
+
+![call with arguments]()
+![call without arguments]()

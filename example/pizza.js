@@ -38,6 +38,11 @@ program
         console.log('Please come again.');
         console.log(creditcard);
     });
+program
+    .command('hello [name]')
+    .action(function(name) {
+        console.log('Hello', name);
+    });
 
 inquander.parse(program, process.argv, {
     message: 'Pizza pizza',
