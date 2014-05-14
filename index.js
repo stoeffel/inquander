@@ -14,6 +14,7 @@ Inquander.prototype.parse = function(program, argv, config) {
     this.message = config.message;
     this.defaultCommand = config.defaultCommand;
     this.overrides = config.overrides || {};
+    this.hidden = config.hidden || {};
     this.commandMapper = new CommandMapper(program, config);
 
     if (this.commandMapper.hasNoArguments(this.argv)) {
@@ -78,10 +79,13 @@ Inquander.prototype.askForArgs = function() {
 
 Inquander.prototype.overrideQuestions = function(questions) {
     var me = this;
-    return _.map(questions, function(question) {
+    return _.compact(_.map(questions, function(question) {
         var override = me.overrides[question.name];
+        if (_.contains(me.hidden, question.name)) {
+            return null;
+        }
         return _.merge(question, override);
-    });
+    }));
 };
 
 module.exports = new Inquander();

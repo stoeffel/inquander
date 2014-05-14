@@ -33,7 +33,7 @@ program
         }
     });
 program
-    .command('pay [creditcard]')
+    .command('pay [creditcard] [notininquirer]')
     .action(function(creditcard) {
         console.log('Please come again.');
         console.log(creditcard);
@@ -47,6 +47,7 @@ program
 inquander.parse(program, process.argv, {
     message: 'Pizza pizza',
     defaultCommand: 'pay',
+    hidden: ['notininquirer'],
     overrides: {
         'creditcard': {
             type: 'password'
