@@ -1,6 +1,6 @@
 {
   "name": "inquander",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Inquirer for commander. If no arguments and options are passed to your commander app, it runs inquirer.",
   "main": "index.js",
   "scripts": {
@@ -16,19 +16,25 @@
     "cli"
   ],
   "author": "Christoph Hermann",
+  "contribuitors": [
+    {
+      "name": "Derek Brown",
+      "url": "https://github.com/DerekTBrown"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stoeffel/inquander/issues"
   },
   "homepage": "https://github.com/stoeffel/inquander",
   "devDependencies": {
-    "should": "~3.3.1",
-    "mocha": "~1.18.2"
+    "mocha": "^3.4.2",
+    "should": "^3.3.2"
   },
   "dependencies": {
-    "commander": "~2.2.0",
-    "inquirer": "~0.4.1",
-    "lodash": "~2.4.1",
-    "underscore.string": "~2.3.3"
+    "commander": "^2.9.0",
+    "inquirer": "^3.1.0",
+    "lodash": "^4.17.4",
+    "underscore.string": "^3.3.4"
   }
 }

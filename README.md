@@ -12,20 +12,11 @@ If you call your module with arguments it acts like a normal commander tool.
 But if you call it without any arguments or commands it will parse your definitions and runs it using inquirer.
 ![call without arguments](https://raw.githubusercontent.com/stoeffel/inquander/master/example/call_as_inquirer.png)
 
-Features
---------
-
-* lists commands
-* requests input for arguments
-* asks for options
-* override inquirer definition of arguments and options 
-* custom message
-* specifiy default command
 
 Usage
 -----
 
-Instead of calling programm.parse you need to call inquander.parse.
+Instead of calling program.parse you need to call inquander.parse.
 
 ```Javascript
 var program = require('commander'),
@@ -46,7 +37,21 @@ program
 inquander.parse(program, process.argv);
 ```
 
-You can override the defintion of a argument or a option for inquirer.
+Options
+-----
+
+### Message and Default Command
+The root message and default command options define the inquirer root behavior:
+```Javascript
+inquander.parse(program, process.argv, {
+    message: 'Little Caesar\'s Pizza Ordering',
+    defaultCommand: 'pay'
+});
+```
+
+#### Type Overrides
+The commander api doesn't identify special types (password, list, editor, etc).
+So to specify field types specifically for inquirer, use the overrides option:
 
 ```Javascript
 inquander.parse(program, process.argv, {
@@ -62,4 +67,21 @@ inquander.parse(program, process.argv, {
 });
 ```
 
-For more examples take a look into the example folder.
+#### Hidden Fields
+To hide a field from the interactive view, use the hidden option:
+```Javascript
+inquander.parse(program, process.argv, {
+    hidden: ['notininquirer']
+});
+```
+
+##### For more examples take a look into the example folder.
+
+
+Advanced
+-----
+
+#### Detecting Interactive Mode
+To enable different behavior for interactive and non-interactive modes,
+inquander defines a flag in `program.usingInquirer` which indicates
+whether inquander is using inquirer or commander.
