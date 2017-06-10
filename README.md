@@ -81,6 +81,10 @@ inquander.parse(program, process.argv, {
 Advanced
 -----
 
+#### Run Command
+`Inquander.runCommand(<COMMAND>)` allows you to manually trigger a generated
+command.
+
 #### Detecting Interactive Mode
 To enable different behavior for interactive and non-interactive modes,
 inquander defines a flag in `program.usingInquirer` which indicates

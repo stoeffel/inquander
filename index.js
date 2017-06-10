@@ -36,17 +36,22 @@ Inquander.prototype.askForCommand = function() {
         default: this.defaultCommand,
         choices: this.inquireMapper.mapCommands()
     }]).then(function(answer){
-        me.command = me.commandMapper.getCommand(answer.commandName);
-        me.args = me.commandMapper.mapArguments(answer.commandName);
-        me.options = me.commandMapper.mapOptions(answer.commandName);
-        me.argv[2] = answer.commandName;
-        if (me.hasArgs()) {
-            me.askForArgs();
-        } else {
-            me.program.parse(me.argv);
-        }
+      me.runCommand(answer.commandName);
     });
 };
+
+Inquander.prototype.runCommand = function(commandName){
+  this.command = this.commandMapper.getCommand(commandName);
+  this.args = this.commandMapper.mapArguments(commandName);
+  this.options = this.commandMapper.mapOptions(commandName);
+  this.argv = this.argv.slice(0,2);
+  this.argv[2] = commandName;
+  if (this.hasArgs()) {
+      this.askForArgs();
+  } else {
+      this.program.parse(this.argv);
+  }
+}
 
 Inquander.prototype.hasArgs = function() {
     return this.args.length > 0 || this.options.length > 0;

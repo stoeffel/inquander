@@ -2,59 +2,59 @@
 
 var program = require('commander'),
     inquander = require('..'),
+    inquirer = require('inquirer')
     _ = require('lodash');
 
 program
-    .version('0.0.1')
-    .command('order [count] [pickup]')
-    .description('Order a pizza.')
-    .option('-p, --peppers', 'Add peppers')
-    .option('-P, --pineapple', 'Add pineapple')
-    .option('-b, --bbq', 'Add bbq sauce')
-    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
-    .option('-C, --no-cheese', 'You do not want any cheese')
-    .action(function(count, pickup, options) {
-        console.log('You ordered', count, ' pizzas, with:');
-        console.log(pickup);
-        if (options.peppers) {
-            console.log('Peppers');
+    .version('1.0.0')
+    .command('order <size> <delivery>')
+    .description('Order A Pizza')
+    .option('-c, --cheese [cheese]', 'Add the specified type of cheese [mozzarella]', 'mozzarella')
+    .action(function(size, delivery, options) {
+        console.log('You ordered a ' + size + ' pizza for ' + (delivery ? 'delivery' : 'pickup') + ':');
+
+        if(program.usingInquirer){
+          inquirer.prompt([{
+            type: 'confirm',
+            name: 'tip',
+            message: 'Would you like to pay for your order now?',
+            default: true
+          }]).then(function(answers){
+            if(answers.tip){
+              inquander.runCommand('pay');
+            }
+          })
         }
-        if (options.pineapple) {
-            console.log('Pineapple');
-        }
-        if (options.bbq) {
-            console.log('Bbq');
-        }
-        if (_.isString(options.cheese)) {
-            console.log('Cheese', options.cheese);
-        }
-        if (options.noCheese) {
-            console.log('No-cheese');
-        }
-    });
-program
-    .command('pay [creditcard] [notininquirer]')
-    .action(function(creditcard) {
-        console.log('Please come again.');
-        console.log(creditcard);
-    });
-program
-    .command('hello [name]')
-    .action(function(name) {
-        console.log('Hello', name);
     });
 
+  program
+      .command('pay [creditcard] [notininquirer]')
+      .description('Pay for my Order')
+      .action(function(count, pickup, options) {
+
+
+
+      });
+
 inquander.parse(program, process.argv, {
-    message: 'Pizza pizza',
+    message: 'Welcome to Inquander Pizza Co.  How can I help you?',
     defaultCommand: 'pay',
     hidden: ['notininquirer'],
     overrides: {
+        'delivery': {
+          type: 'confirm',
+          name: 'delivery',
+          message: 'Is this order for delivery?',
+          default: true
+        },
+        'size': {
+          type: 'list',
+          name: 'size',
+          message: 'What size would you like?',
+          choices: ['small', 'medium', 'large', 'x-large']
+        },
         'creditcard': {
             type: 'password'
         },
-        'pickup': {
-            type: 'checkbox',
-            choices: ['one', 'two']
-        }
     }
 });
