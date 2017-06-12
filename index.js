@@ -18,9 +18,11 @@ Inquander.prototype.parse = function(program, argv, config) {
     this.commandMapper = new CommandMapper(program, config);
 
     if (this.commandMapper.hasNoArguments(this.argv)) {
+        program.usingInquirer = true;
         this.inquireMapper = new InquireMapper(this.commandMapper, config);
         this.askForCommand();
     } else {
+        program.usingInquirer = false;
         program.parse(argv);
     }
 };
@@ -33,18 +35,23 @@ Inquander.prototype.askForCommand = function() {
         name: 'commandName',
         default: this.defaultCommand,
         choices: this.inquireMapper.mapCommands()
-    }], function(answer) {
-        me.command = me.commandMapper.getCommand(answer.commandName);
-        me.args = me.commandMapper.mapArguments(answer.commandName);
-        me.options = me.commandMapper.mapOptions(answer.commandName);
-        me.argv[2] = answer.commandName;
-        if (me.hasArgs()) {
-            me.askForArgs();
-        } else {
-            me.program.parse(me.argv);
-        }
+    }]).then(function(answer){
+      me.runCommand(answer.commandName);
     });
 };
+
+Inquander.prototype.runCommand = function(commandName){
+  this.command = this.commandMapper.getCommand(commandName);
+  this.args = this.commandMapper.mapArguments(commandName);
+  this.options = this.commandMapper.mapOptions(commandName);
+  this.argv = this.argv.slice(0,2);
+  this.argv[2] = commandName;
+  if (this.hasArgs()) {
+      this.askForArgs();
+  } else {
+      this.program.parse(this.argv);
+  }
+}
 
 Inquander.prototype.hasArgs = function() {
     return this.args.length > 0 || this.options.length > 0;
@@ -55,23 +62,24 @@ Inquander.prototype.askForArgs = function() {
         me = this;
     questions = _.compact(questions);
     questions = this.overrideQuestions(questions);
-    inquirer.prompt(questions, function(answers) {
-        answers = _(answers).map(function(value, key) {
-            if (_s.startsWith(key, '--')) {
-                if (_.isBoolean(value)) {
-                    if (value) {
-                        return key;
-                    }
-                } else {
-                    return [key, value];
-                }
-            } else {
-                if (_.isArray(value)) {
-                    value = value.join(',');
-                }
-                return value;
-            }
-        }).flatten().compact().value();
+    inquirer.prompt(questions)
+            .then(function(answers) {
+                  answers = _(answers).map(function(value, key) {
+                      if (_s.startsWith(key, '--')) {
+                          if (_.isBoolean(value)) {
+                              if (value) {
+                                  return key;
+                              }
+                          } else {
+                              return [key, value];
+                          }
+                      } else {
+                          if (_.isArray(value)) {
+                              value = value.join(',');
+                          }
+                          return value;
+                      }
+                  }).flatten().compact().value();
         me.argv = _.union(me.argv, answers);
         me.program.parse(me.argv);
     });
@@ -81,7 +89,7 @@ Inquander.prototype.overrideQuestions = function(questions) {
     var me = this;
     return _.compact(_.map(questions, function(question) {
         var override = me.overrides[question.name];
-        if (_.contains(me.hidden, question.name)) {
+        if (_.includes(me.hidden, question.name)) {
             return null;
         }
         return _.merge(question, override);

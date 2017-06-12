@@ -2,59 +2,100 @@
 
 var program = require('commander'),
     inquander = require('..'),
+    inquirer = require('inquirer')
     _ = require('lodash');
 
+function list(val) {
+  if(typeof val === "string"){
+    return val.split(',');
+  } else {
+    return val;
+  }
+}
+
 program
-    .version('0.0.1')
-    .command('order [count] [pickup]')
-    .description('Order a pizza.')
-    .option('-p, --peppers', 'Add peppers')
-    .option('-P, --pineapple', 'Add pineapple')
-    .option('-b, --bbq', 'Add bbq sauce')
-    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
-    .option('-C, --no-cheese', 'You do not want any cheese')
-    .action(function(count, pickup, options) {
-        console.log('You ordered', count, ' pizzas, with:');
-        console.log(pickup);
-        if (options.peppers) {
-            console.log('Peppers');
+    .version('1.0.0')
+    .command('order <size> <delivery>')
+    .description('Order A Pizza')
+    .option('-c, --cheese [type]', 'What type of cheese would you like? [Mozzarella]', 'Mozzarella')
+    .option('-m, --meats <meats>', 'What meats would you like?', list)
+    .option('-s, --special_requests <request>', 'Any special requests?')
+    .action(function(size, delivery, options) {
+
+        // Print Order
+        console.log('You ordered a ' + size + ' pizza for ' + (delivery ? 'delivery' : 'pickup') + ':');
+
+          // Cheese
+          console.log(' Cheese: '+options.cheese);
+
+          // Meats
+          console.log(' Meats:');
+          if(options.meats.length == 0){
+            console.log('   None.')
+          } else {
+            _.each(options.meats, function(meat){
+              console.log('  - '+meat);
+            })
+          }
+
+          // Special Requests
+          console.log(' Special Requests:');
+          console.log('   '+options.special_requests);
+
+
+        // Prompt for Payment
+        if(program.usingInquirer){
+          inquirer.prompt([{
+            type: 'confirm',
+            name: 'tip',
+            message: 'Would you like to pay for your order now?',
+            default: true
+          }]).then(function(answers){
+            if(answers.tip){
+              inquander.runCommand('pay');
+            }
+          })
         }
-        if (options.pineapple) {
-            console.log('Pineapple');
-        }
-        if (options.bbq) {
-            console.log('Bbq');
-        }
-        if (_.isString(options.cheese)) {
-            console.log('Cheese', options.cheese);
-        }
-        if (options.noCheese) {
-            console.log('No-cheese');
-        }
-    });
-program
-    .command('pay [creditcard] [notininquirer]')
-    .action(function(creditcard) {
-        console.log('Please come again.');
-        console.log(creditcard);
-    });
-program
-    .command('hello [name]')
-    .action(function(name) {
-        console.log('Hello', name);
     });
 
+  program
+      .command('pay <creditcard> [notininquirer]')
+      .description('Pay for my Order')
+      .action(function(creditcard, notininquirer) {
+        console.log("Your Credit Card #: " + creditcard);
+      });
+
 inquander.parse(program, process.argv, {
-    message: 'Pizza pizza',
+    message: 'Welcome to Inquander Pizza Co.  How can I help you?',
     defaultCommand: 'pay',
     hidden: ['notininquirer'],
     overrides: {
-        'creditcard': {
-            type: 'password'
+        'delivery': {
+          type: 'confirm',
+          name: 'delivery',
+          message: 'Is this order for delivery?',
+          default: true
         },
-        'pickup': {
-            type: 'checkbox',
-            choices: ['one', 'two']
-        }
+        'size': {
+          type: 'list',
+          name: 'size',
+          message: 'What size would you like?',
+          choices: ['small', 'medium', 'large', 'x-large']
+        },
+        '--meats': {
+          type: 'checkbox',
+          name: '--meats',
+          message: 'What meats would you like?',
+          choices: ['Sausage', 'Pepperoni', 'Meatball']
+        },
+        '--special_requests': {
+          type: 'editor',
+          name: '--special_requests',
+          message: 'Any special requests?'
+        },
+        'creditcard': {
+            type: 'password',
+            message: 'Credit Card #:'
+        },
     }
 });
