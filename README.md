@@ -83,9 +83,27 @@ Advanced
 
 #### Run Command
 `Inquander.runCommand(command, forceInteractive)` allows you to manually trigger a generated
-command. 
+command.
 
 #### Detecting Interactive Mode
 To enable different behavior for interactive and non-interactive modes,
 inquander defines a flag in `program.usingInquirer` which indicates
 whether inquander is using inquirer or commander.
+
+#### Promises in Overrides
+One can also pass Promises in for any value inside of the overrides object,
+for instance:
+
+``Javascript
+inquander.parse(program, process.argv, {
+    overrides: {
+        'creditcard': {
+            type: 'password'
+        },
+        'pickup': {
+            type: 'checkbox',
+            choices: Promise.resolve(['one','two'])
+        }
+    }
+});
+```

@@ -80,7 +80,9 @@ inquander.parse(program, process.argv, {
           type: 'list',
           name: 'size',
           message: 'What size would you like?',
-          choices: ['small', 'medium', 'large', 'x-large']
+
+          // Note that one can use promises here:
+          choices: Promise.resolve(['small', 'medium', 'large', 'x-large'])
         },
         '--meats': {
           type: 'checkbox',
