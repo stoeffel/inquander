@@ -1,6 +1,7 @@
 var inquirer = require('inquirer'),
     _ = require('lodash'),
     _s = require('underscore.string'),
+    Promise = require('bluebird'),
     CommandMapper = require('./lib/commandMapper'),
     InquireMapper = require('./lib/inquireMapper'),
     Inquander;
@@ -60,26 +61,27 @@ Inquander.prototype.hasArgs = function() {
 Inquander.prototype.askForArgs = function() {
     var questions = _.union(this.inquireMapper.mapArguments(this.args), this.inquireMapper.mapOptions(this.options)),
         me = this;
-    questions = _.compact(questions);
-    questions = this.overrideQuestions(questions);
-    inquirer.prompt(questions)
-            .then(function(answers) {
-                  answers = _(answers).map(function(value, key) {
-                      if (_s.startsWith(key, '--')) {
-                          if (_.isBoolean(value)) {
-                              if (value) {
-                                  return key;
-                              }
-                          } else {
-                              return [key, value];
+    this.overrideQuestions(questions)
+        .then(function(questions_res){
+          return inquirer.prompt(questions_res);
+        })
+        .then(function(answers) {
+              answers = _(answers).map(function(value, key) {
+                  if (_s.startsWith(key, '--')) {
+                      if (_.isBoolean(value)) {
+                          if (value) {
+                              return key;
                           }
                       } else {
-                          if (_.isArray(value)) {
-                              value = value.join(',');
-                          }
-                          return value;
+                          return [key, value];
                       }
-                  }).flatten().compact().value();
+                  } else {
+                      if (_.isArray(value)) {
+                          value = value.join(',');
+                      }
+                      return value;
+                  }
+              }).flatten().compact().value();
         me.argv = _.union(me.argv, answers);
         me.program.parse(me.argv);
     });
@@ -87,13 +89,29 @@ Inquander.prototype.askForArgs = function() {
 
 Inquander.prototype.overrideQuestions = function(questions) {
     var me = this;
-    return _.compact(_.map(questions, function(question) {
+
+    return Promise.map(questions, function(question) {
         var override = me.overrides[question.name];
-        if (_.includes(me.hidden, question.name)) {
+
+        // Check if Undefined
+        if(typeof override === "undefined"){
             return null;
         }
-        return _.merge(question, override);
-    }));
+
+        // Check if Hidden
+        else if (_.includes(me.hidden, question.name)) {
+            return null;
+        }
+
+        // Resolve Promises
+        return Promise.props(override)
+                       .then(function(override_res){
+                         return _.merge(question, override_res);
+                       });
+    })
+    .then(function(res){
+      return _.compact(res);
+    });
 };
 
 module.exports = new Inquander();
