@@ -94,7 +94,7 @@ whether inquander is using inquirer or commander.
 One can also pass Promises in for any value inside of the overrides object,
 for instance:
 
-``Javascript
+```Javascript
 inquander.parse(program, process.argv, {
     overrides: {
         'creditcard': {
